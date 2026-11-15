@@ -1,0 +1,147 @@
+/* =========================================================
+   Composant « carte de prix » — styles réutilisables
+   Toutes les couleurs passent par des variables : on peut
+   changer le thème d'une carte sans toucher au composant.
+   ========================================================= */
+
+:root {
+  --card-bg: #ffffff;
+  --card-text: #1f2933;
+  --card-muted: #616e7c;
+  --card-border: #e4e7eb;
+  --card-accent: #1d4ed8;        /* bleu (remplace « blue ») */
+  --card-accent-hover: #1e3a8a;  /* bleu foncé (remplace « darkblue ») */
+  --card-price: #15803d;         /* vert lisible sur fond blanc */
+  --card-radius: 14px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Bug 3 corrigé : plus de largeur fixe de 300px.
+   La carte prend toute la place disponible, jusqu'à 320px. */
+.pricing-card {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  /* Bug 2 corrigé : « box-shdow » → « box-shadow » */
+  box-shadow: 0 0 10px #ccc;
+  text-align: left;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Carte mise en avant (ex. l'offre recommandée) */
+.pricing-card--highlighted {
+  border: 2px solid var(--card-accent);
+  box-shadow: 0 10px 30px rgba(29, 78, 216, 0.18);
+}
+
+.pricing-card__badge {
+  align-self: flex-start;
+  margin: 0 0 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--card-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pricing-card__title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.pricing-card__price {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: var(--card-price);
+}
+
+.pricing-card__amount {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.pricing-card__period {
+  color: var(--card-muted);
+}
+
+.pricing-card__features {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 20px;
+  flex: 1; /* pousse le bouton en bas : les boutons s'alignent dans une grille */
+}
+
+.pricing-card__features li {
+  padding: 8px 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.pricing-card__features li::before {
+  content: "✓ ";
+  color: var(--card-price);
+  font-weight: 700;
+}
+
+/* Bug 5 corrigé : le bouton montre qu'il est cliquable
+   (curseur, survol, focus clavier) et il a un vrai gestionnaire en JS. */
+.btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--card-accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  background: var(--card-accent-hover);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.btn[disabled] {
+  background: #15803d;
+  cursor: default;
+}
+
+/* Grille pour afficher plusieurs cartes côte à côte */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.pricing-grid .pricing-card {
+  max-width: none; /* dans la grille, c'est la colonne qui fixe la largeur */
+}

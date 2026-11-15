@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — composant Card réutilisable</title>
+  <link rel="stylesheet" href="card.css">
+  <style>
+    /* Styles propres à cette page de démonstration (pas au composant) */
+    body { margin: 0; padding: 48px 16px; background: #f5f7fa; font-family: system-ui, sans-serif; }
+    h1 { text-align: center; margin: 0 0 8px; color: #1f2933; }
+    .subtitle { text-align: center; margin: 0 0 40px; color: #616e7c; }
+    .message { text-align: center; min-height: 1.5em; margin-top: 28px; color: #15803d; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Choose your plan</h1>
+    <p class="subtitle">Same component, three different plans.</p>
+
+    <!-- Les cartes sont créées par card.js à partir des données ci-dessous -->
+    <section id="pricing" class="pricing-grid" aria-label="Plans"></section>
+
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="card.js"></script>
+  <script>
+    const message = document.getElementById("message");
+
+    // Ce qui se passe quand on clique sur un bouton de carte
+    function handleSelect(plan, button) {
+      button.textContent = "Trial started ✓";
+      button.disabled = true;
+      message.textContent = `You selected the ${plan.title} ($${plan.price.toFixed(2)}/month).`;
+    }
+
+    // Les données : ajouter une offre = ajouter un objet, sans toucher au HTML
+    const plans = [
+      {
+        title: "Basic Plan",
+        price: 9.99,
+        features: ["1 GB Storage", "Basic Support", "All Core Features"],
+        onSelect: handleSelect,
+      },
+      {
+        title: "Pro Plan",
+        price: 19.99,
+        features: ["10 GB Storage", "Priority Support", "All Core Features", "Team access (3 users)"],
+        highlighted: true,
+        badge: "Most popular",
+        onSelect: handleSelect,
+      },
+      {
+        title: "Business Plan",
+        price: 49.99,
+        features: ["100 GB Storage", "24/7 Support", "All Core Features", "Unlimited users"],
+        buttonText: "Contact Sales",
+        onSelect: handleSelect,
+      },
+    ];
+
+    renderCards("#pricing", plans);
+  </script>
+</body>
+</html>

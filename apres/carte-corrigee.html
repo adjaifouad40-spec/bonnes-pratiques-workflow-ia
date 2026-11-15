@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Étape 1 — carte corrigée (avant refactorisation)</title>
+<style>
+/* Étape 1 : on corrige seulement les bugs, sans changer la structure.
+   Les commentaires « FIX » indiquent chaque correction. */
+* { box-sizing: border-box; }                 /* FIX : le padding ne fait plus déborder */
+body { font-family: system-ui, sans-serif; padding: 24px 16px; }
+.pricing {
+  width: 100%;                                /* FIX : plus de largeur fixe de 300px */
+  max-width: 300px;
+  margin: auto;
+  background-color: #fff;
+  box-shadow: 0 0 10px #ccc;                  /* FIX : « box-shdow » mal orthographié */
+  padding: 16px;
+  text-align: left;
+  border-radius: 10px;
+}
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+.price {
+  font-size: 18px;
+  color: green;
+}
+.features {
+  list-style: none;
+  padding-left: 0;
+}
+.features li {
+  padding: 4px;
+  border-bottom: 1px solid #eee;
+}
+.btn {
+  background: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;                            /* FIX : on voit que le bouton est cliquable */
+}
+.btn:hover {
+  background: darkblue;
+}
+.btn:focus-visible {                          /* FIX : visible au clavier */
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<div class="pricing">
+  <h2 class="title">Basic Plan</h2>          <!-- FIX : </h2> fermant (avant : <h2>) -->
+  <p class="price">$9.99 /month</p>
+  <ul class="features">
+    <li>1 GB Storage</li>
+    <li>Basic Support</li>
+    <li>All Core Features</li>
+  </ul>
+  <button class="btn" type="button" id="start-trial">Start Trial</button>
+</div>
+
+<script>
+  // FIX : le bouton ne faisait rien, il n'avait aucun gestionnaire d'événement
+  const startTrial = document.getElementById("start-trial");
+  startTrial?.addEventListener("click", () => {
+    startTrial.textContent = "Trial started ✓";
+    startTrial.disabled = true;
+  });
+</script>
+</body>
+</html>

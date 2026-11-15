@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tests du composant Card</title>
+  <link rel="stylesheet" href="card.css">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 32px auto; padding: 0 16px; }
+    li.ok { color: #15803d; } li.ko { color: #b91c1c; font-weight: 600; }
+    #sandbox { display: none; }
+  </style>
+</head>
+<body>
+  <h1>Tests du composant <code>Card(title, price, features)</code></h1>
+  <p id="summary"></p>
+  <ul id="results"></ul>
+  <div id="sandbox"></div>
+
+  <script src="card.js"></script>
+  <script>
+    const results = [];
+    function test(name, fn) {
+      try { fn(); results.push([name, true]); }
+      catch (e) { results.push([name + " → " + e.message, false]); }
+    }
+    function assert(cond, msg) { if (!cond) throw new Error(msg || "assertion fausse"); }
+
+    test("Card renvoie un <article> avec la classe pricing-card", () => {
+      const c = Card("Basic Plan", 9.99, ["1 GB Storage"]);
+      assert(c.tagName === "ARTICLE" && c.classList.contains("pricing-card"));
+    });
+
+    test("Le titre est un <h2> fermé, qui ne contient pas le reste de la carte", () => {
+      const c = Card("Basic Plan", 9.99, ["A", "B"]);
+      const h2 = c.querySelector("h2");
+      assert(h2 && h2.textContent === "Basic Plan", "titre incorrect");
+      assert(!h2.querySelector("p, ul, button"), "le <h2> englobe d'autres éléments");
+    });
+
+    test("Le prix est formaté avec 2 décimales et la devise", () => {
+      const c = Card("Pro", 19.9, []);
+      assert(c.querySelector(".pricing-card__amount").textContent === "$19.90");
+    });
+
+    test("Une <li> par avantage", () => {
+      const c = Card("Pro", 19.99, ["A", "B", "C", "D"]);
+      assert(c.querySelectorAll(".pricing-card__features li").length === 4);
+    });
+
+    test("Le clic sur le bouton appelle onSelect avec les infos de l'offre", () => {
+      let received = null;
+      const c = Card("Pro", 19.99, ["A"], { onSelect: (plan) => (received = plan) });
+      document.getElementById("sandbox").append(c);
+      c.querySelector("button").click();
+      assert(received && received.title === "Pro" && received.price === 19.99);
+    });
+
+    test("Sans onSelect, le bouton réagit quand même (désactivé + texte changé)", () => {
+      const c = Card("Basic", 9.99, ["A"]);
+      const b = c.querySelector("button");
+      b.click();
+      assert(b.disabled && b.textContent.includes("✓"));
+    });
+
+    test("Le texte est inséré en textContent : pas d'injection HTML", () => {
+      const c = Card("<img src=x onerror=alert(1)>", 1, ["<b>gras</b>"]);
+      assert(!c.querySelector("img") && !c.querySelector("b"));
+    });
+
+    test("Option highlighted + badge", () => {
+      const c = Card("Pro", 19.99, [], { highlighted: true, badge: "Populaire" });
+      assert(c.classList.contains("pricing-card--highlighted"));
+      assert(c.querySelector(".pricing-card__badge").textContent === "Populaire");
+    });
+
+    test("Titre vide → erreur claire", () => {
+      let threw = false;
+      try { Card("", 9.99, []); } catch (e) { threw = true; }
+      assert(threw);
+    });
+
+    test("Prix invalide → erreur claire", () => {
+      let threw = false;
+      try { Card("Basic", "9.99", []); } catch (e) { threw = true; }
+      assert(threw);
+    });
+
+    test("features absent ou invalide → liste vide, pas de plantage", () => {
+      const c = Card("Basic", 0, null);
+      assert(c.querySelectorAll("li").length === 0);
+    });
+
+    test("renderCards affiche une carte par offre", () => {
+      const box = document.createElement("div");
+      renderCards(box, [
+        { title: "A", price: 1, features: [] },
+        { title: "B", price: 2, features: [] },
+        { title: "C", price: 3, features: [] },
+      ]);
+      assert(box.querySelectorAll(".pricing-card").length === 3);
+    });
+
+    const ul = document.getElementById("results");
+    results.forEach(([name, ok]) => {
+      const li = document.createElement("li");
+      li.className = ok ? "ok" : "ko";
+      li.textContent = (ok ? "✅ " : "❌ ") + name;
+      ul.append(li);
+    });
+    const passed = results.filter((r) => r[1]).length;
+    document.getElementById("summary").textContent = `${passed}/${results.length} tests réussis`;
+  </script>
+</body>
+</html>
